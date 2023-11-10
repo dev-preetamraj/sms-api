@@ -1,0 +1,6 @@
+USER_NOT_FOUND = 'User not found'
+USER_FETCHED_SUCCESS = 'Profile fetched successfully'
+REGISTRATION_SUCCESS = 'User registered successfully'
+PASSWORD_NOT_MATCHED = 'Password did not matched'
+EMAIL_NOT_UNIQUE = 'User with this email already exists'
+USERNAME_NOT_UNIQUE = 'User with this username already exists'
