@@ -81,6 +81,12 @@ class RegistrationView(APIView):
                         'type': 'string',
                         'minlength': 8
                     },
+                    'role': {
+                        'required': False,
+                        'empty': False,
+                        'type': 'string',
+                        'isrole': True
+                    },
                 }
 
                 is_valid = c_validator.validate(request.data, schema)

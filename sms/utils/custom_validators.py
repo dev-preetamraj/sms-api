@@ -118,3 +118,10 @@ class CustomValidator(Validator):
 
             if first_char.isspace() or last_char.isspace():
                 self._error(field, global_msg.FL_SPACE_VALIDATION)
+    
+    def _validate_isrole(self, isrole, field, value):
+        """
+        {'type': 'boolean'}
+        """
+        if isrole and value not in ['ADMIN', 'TEACHER', 'STUDENT']:
+            self._error(field, global_msg.ROLE_VALIDATION)

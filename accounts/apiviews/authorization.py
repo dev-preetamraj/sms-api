@@ -55,6 +55,12 @@ class AuthorizationView(APIView):
                             'empty': False,
                             'type': 'string',
                             'minlength': 8
+                        },
+                        'role': {
+                            'required': True,
+                            'empty': False,
+                            'type': 'string',
+                            'isrole': True
                         }
                     }
                 

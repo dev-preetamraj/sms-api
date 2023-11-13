@@ -107,7 +107,8 @@ DATABASES = {
         'PASSWORD': DB_PASSWORD,
         'HOST': DB_HOST,
         'PORT': DB_PORT,
-        'TIME_ZONE': TIME_ZONE
+        'TIME_ZONE': TIME_ZONE,
+        'OPTIONS': {'ssl': {'ca': os.getenv(key='MYSQL_ATTR_SSL_CA')}}
     }
 }
 

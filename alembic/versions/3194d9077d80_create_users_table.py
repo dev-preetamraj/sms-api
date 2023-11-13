@@ -1,8 +1,8 @@
-"""created users table
+"""create users table
 
-Revision ID: 0e39a411e8c9
+Revision ID: 3194d9077d80
 Revises: 
-Create Date: 2023-11-11 00:28:20.740483
+Create Date: 2023-11-14 00:15:49.708780
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision: str = '0e39a411e8c9'
+revision: str = '3194d9077d80'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -30,6 +30,7 @@ def upgrade() -> None:
     sa.Column('profile_picture', sa.String(length=255), server_default=sa.text("'https://res.cloudinary.com/dxgl4eyhq/image/upload/v1699608195/sms/profile/default_profile.jpg'"), nullable=True),
     sa.Column('is_active', mysql.TINYINT(), server_default=sa.text('1'), nullable=True),
     sa.Column('gender', sa.Enum('MALE', 'FEMALE', 'OTHERS', name='genderenum'), nullable=True),
+    sa.Column('role', sa.Enum('ADMIN', 'TEACHER', 'STUDENT', name='roleenum'), server_default=sa.text("'STUDENT'"), nullable=True),
     sa.Column('dob', sa.Date(), nullable=True),
     sa.Column('address', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),

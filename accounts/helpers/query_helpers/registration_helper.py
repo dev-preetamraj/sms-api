@@ -13,13 +13,9 @@ def registration_qh(data):
         User Registration
     """
     try:
-        user = User(
-            email = data['email'],
-            username = data['username'],
-            password = hash_password(data['password']),
-            first_name = data['first_name'],
-            last_name = data['last_name'],
-        )
+        data.pop('confirm_password')
+        data['password'] = hash_password(data['password'])
+        user = User(**data)
         session.add(user)
         session.commit()
 

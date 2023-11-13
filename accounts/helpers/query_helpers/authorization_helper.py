@@ -25,6 +25,7 @@ def get_user_qh(user_id: int):
             User.profile_picture,
             User.is_active,
             User.gender,
+            User.role,
             User.dob,
             User.address,
             User.created_at,
@@ -53,7 +54,8 @@ def get_user_with_email_password_qh(email: str, password: str):
     try:
         user = session.query(
             User.id,
-            User.password
+            User.password,
+            User.role
         ).filter(
             User.email == email,
             User.is_active

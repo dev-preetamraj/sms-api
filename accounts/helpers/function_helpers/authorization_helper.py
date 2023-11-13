@@ -23,9 +23,17 @@ def authorize_fh(request, slug):
             password = request.data.get('password')
             user = get_user_with_email_password_qh(email, password)
 
+            if user['role'].value != request.data.get('role'):
+                return Response({
+                    'success': False,
+                    'status_code': status.HTTP_400_BAD_REQUEST,
+                    'message': global_msg.INVALID_ROLE_REQUEST,
+                    'data': None
+                }, status = status.HTTP_400_BAD_REQUEST)
+
             if user:
-                access_token = generate_access_token(user['id'])
-                refresh_token = generate_refresh_token(user['id'])
+                access_token = generate_access_token(user['id'], user['role'].value)
+                refresh_token = generate_refresh_token(user['id'], user['role'].value)
 
                 return Response({
                     'success': True,
@@ -53,9 +61,10 @@ def authorize_fh(request, slug):
         logger.error(f'authorize_fh Helper Function : {e}')
         raise ce.InternalServerError
 
-def generate_access_token(user_id):
+def generate_access_token(user_id, role):
     access_token_payload = {
         'user_id': user_id,
+        'role': role,
         'exp': (
             datetime.utcnow() +
             timedelta(
@@ -73,9 +82,10 @@ def generate_access_token(user_id):
     return access_token
 
 
-def generate_refresh_token(user_id):
+def generate_refresh_token(user_id, role):
     refresh_token_payload = {
         'user_id': user_id,
+        'role': role,
         'exp': (
             datetime.utcnow() +
             timedelta(
@@ -108,7 +118,8 @@ def regenerate_token(refresh_token):
                 "message" : global_msg.ACCESS_TOKEN_REGENERATED,
                 'data': {
                     'access_token': generate_access_token(
-                        user.id
+                        user.id,
+                        user.role.value
                     )
                 },
             }, status = status.HTTP_201_CREATED)
@@ -161,6 +172,14 @@ def verify_token(access_token):
 
         user = get_user_qh(payload.get('user_id'))
 
+        if user.role.value != payload.get('role'):
+            return Response({
+                "success" : False,
+                "status_code" :status.HTTP_400_BAD_REQUEST,
+                "message" : global_msg.INVALID_ROLE_REQUEST,
+                'data': None
+            }, status = status.HTTP_400_BAD_REQUEST)
+        
         if user:
             return Response({
                 "success" : True,

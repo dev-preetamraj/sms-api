@@ -20,8 +20,10 @@ BAD_REQUEST = 'Bad Request'
 
 INVALID_SLUG = 'Invalid Slug'
 REQUEST_TIMEOUT = 'Request Timeout'
+INVALID_ROLE_REQUEST = 'User role is not authorized to access this feature'
 
 # cerberus validation message
+ROLE_VALIDATION = 'Role must be one of the following values, [\'ADMIN\', \'TEACHER\', \'STUDENT\']'
 INVALID_PAN_CARD_NUMBER = 'Invalid PAN Card Number'
 INVALID_BANK_ACCOUNT_NUMBER = 'Invalid Bank Account Number'
 INVALID_IFSC = 'Invalid IFSC'
