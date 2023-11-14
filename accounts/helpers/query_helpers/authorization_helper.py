@@ -32,7 +32,7 @@ def get_user_qh(user_id: int):
             User.updated_at,
         ).filter(
             User.id == user_id,
-            User.is_active
+            User.is_active == 1
         ).one_or_none()
         session.commit()
 
@@ -58,7 +58,7 @@ def get_user_with_email_password_qh(email: str, password: str):
             User.role
         ).filter(
             User.email == email,
-            User.is_active
+            User.is_active == 1
         ).one_or_none()
         session.commit()
 

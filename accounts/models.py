@@ -1,6 +1,6 @@
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, text, func, Date, Text
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.mysql import TINYINT
+from sqlalchemy.dialects.postgresql import SMALLINT
 from enum import Enum as PythonEnum
 
 from sms.database import Base
@@ -25,7 +25,7 @@ class User(Base):
     last_name = Column(String(50))
     password = Column(String(255), nullable=False)
     profile_picture = Column(String(255), server_default=text("'https://res.cloudinary.com/dxgl4eyhq/image/upload/v1699608195/sms/profile/default_profile.jpg'"))
-    is_active = Column(TINYINT, server_default=text('1'))
+    is_active = Column(SMALLINT, server_default=text('1'))
     gender = Column(Enum(GenderEnum))
     role = Column(Enum(RoleEnum), server_default=text("'STUDENT'"))
     dob = Column(Date)

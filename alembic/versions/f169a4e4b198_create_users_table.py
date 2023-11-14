@@ -1,18 +1,18 @@
 """create users table
 
-Revision ID: 3194d9077d80
+Revision ID: f169a4e4b198
 Revises: 
-Create Date: 2023-11-14 00:15:49.708780
+Create Date: 2023-11-14 19:45:32.131377
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import mysql
+
 
 # revision identifiers, used by Alembic.
-revision: str = '3194d9077d80'
+revision: str = 'f169a4e4b198'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,7 +28,7 @@ def upgrade() -> None:
     sa.Column('last_name', sa.String(length=50), nullable=True),
     sa.Column('password', sa.String(length=255), nullable=False),
     sa.Column('profile_picture', sa.String(length=255), server_default=sa.text("'https://res.cloudinary.com/dxgl4eyhq/image/upload/v1699608195/sms/profile/default_profile.jpg'"), nullable=True),
-    sa.Column('is_active', mysql.TINYINT(), server_default=sa.text('1'), nullable=True),
+    sa.Column('is_active', sa.SMALLINT(), server_default=sa.text('1'), nullable=True),
     sa.Column('gender', sa.Enum('MALE', 'FEMALE', 'OTHERS', name='genderenum'), nullable=True),
     sa.Column('role', sa.Enum('ADMIN', 'TEACHER', 'STUDENT', name='roleenum'), server_default=sa.text("'STUDENT'"), nullable=True),
     sa.Column('dob', sa.Date(), nullable=True),

@@ -101,22 +101,22 @@ DB_PORT = os.getenv(key = 'DB_PORT', default=3306)
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': DB_NAME,
         'USER': DB_USER,
         'PASSWORD': DB_PASSWORD,
         'HOST': DB_HOST,
         'PORT': DB_PORT,
         'TIME_ZONE': TIME_ZONE,
-        'OPTIONS': {'ssl': {'ca': os.getenv(key='MYSQL_ATTR_SSL_CA')}}
+        'OPTIONS': {'sslmode': 'require'}
     }
 }
 
-DATABASE_URL = 'mysql://' + \
+DATABASE_URL = 'postgresql://' + \
     DB_USER + ':' + \
     parse.quote_plus(DB_PASSWORD) + '@' + \
-    DB_HOST + '/' + DB_NAME
-
+    DB_HOST + '/' + DB_NAME + \
+    '?sslmode=require'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
