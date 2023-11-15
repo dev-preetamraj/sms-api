@@ -200,3 +200,9 @@ REST_FRAMEWORK = {
     'VERSION_PARAM': 'version',
     'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "https://sms-client-pi.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
