@@ -47,9 +47,10 @@ def get_user_qh(user_id: int):
 
     return user
 
+
 def get_user_with_email_password_qh(email: str, password: str):
     """
-        Get user from email and password
+    Get user from email and password
     """
     try:
         user = session.query(
@@ -62,8 +63,10 @@ def get_user_with_email_password_qh(email: str, password: str):
         ).one_or_none()
         session.commit()
 
-        if user and verify_password(password, user.password):
+        if user is not None and verify_password(password, user.password):
             user = result_row_to_dict(user)
+        else:
+            user = None
 
     except Exception as e:
         logger.error(f'get_user_with_email_password_qh Query Function : {e}')

@@ -17,10 +17,12 @@ logger = logging.getLogger('accounts')
 # Get an instance of Validator
 c_validator = CustomValidator({}, allow_unknown = True)
 
+
 class VersioningConfig(NamespaceVersioning):
     default_version = 'v1'
     allowed_versions = ['v1']
     version_param = 'version'
+
 
 class AuthorizationView(APIView):
     """
@@ -41,7 +43,7 @@ class AuthorizationView(APIView):
                 json data: Serialize json data
         """
         try:
-            if request.version == 'v1':
+            if self.request.version == 'v1':
                 if slug == 'authorize':
                     schema = {
                         'email': {

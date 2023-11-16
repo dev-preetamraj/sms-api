@@ -13,9 +13,10 @@ from accounts.helpers.query_helpers.authorization_helper import get_user_with_em
 # Get an instance of logger
 logger = logging.getLogger('accounts')
 
+
 def authorize_fh(request, slug):
     """
-        Authorization
+    Authorization
     """
     try:
         if slug == "authorize":
@@ -23,13 +24,13 @@ def authorize_fh(request, slug):
             password = request.data.get('password')
             user = get_user_with_email_password_qh(email, password)
 
-            if user['role'].value != request.data.get('role'):
+            if user and user['role'].value != request.data.get('role'):
                 return Response({
                     'success': False,
                     'status_code': status.HTTP_400_BAD_REQUEST,
                     'message': global_msg.INVALID_ROLE_REQUEST,
                     'data': None
-                }, status = status.HTTP_400_BAD_REQUEST)
+                }, status=status.HTTP_400_BAD_REQUEST)
 
             if user:
                 access_token = generate_access_token(user['id'], user['role'].value)
@@ -43,33 +44,34 @@ def authorize_fh(request, slug):
                         'access_token': access_token,
                         'refresh_token': refresh_token
                     },
-                }, status = status.HTTP_200_OK)
+                }, status=status.HTTP_200_OK)
 
             return Response({
                 'success': False,
                 'status_code': status.HTTP_401_UNAUTHORIZED,
                 'message': app_msg.USER_NOT_FOUND,
                 'data': None,
-            }, status = status.HTTP_401_UNAUTHORIZED)
+            }, status=status.HTTP_401_UNAUTHORIZED)
 
         elif slug == "refresh-token":
             return regenerate_token(request.data.get('refresh_token'))
         elif slug == 'verify-token':
             return verify_token(request.data.get('access_token'))
-        
+
     except Exception as e:
         logger.error(f'authorize_fh Helper Function : {e}')
         raise ce.InternalServerError
+
 
 def generate_access_token(user_id, role):
     access_token_payload = {
         'user_id': user_id,
         'role': role,
         'exp': (
-            datetime.utcnow() +
-            timedelta(
-                days=0, minutes=settings.ACCESS_TOKEN_EXPIRY_MINUTES
-            )
+                datetime.utcnow() +
+                timedelta(
+                    days=0, minutes=settings.ACCESS_TOKEN_EXPIRY_MINUTES
+                )
         ),
         'iat': datetime.utcnow(),
     }
@@ -87,10 +89,10 @@ def generate_refresh_token(user_id, role):
         'user_id': user_id,
         'role': role,
         'exp': (
-            datetime.utcnow() +
-            timedelta(
-                days=settings.REFRESH_TOKEN_EXPIRY_DAYS
-            )
+                datetime.utcnow() +
+                timedelta(
+                    days=settings.REFRESH_TOKEN_EXPIRY_DAYS
+                )
         ),
         'iat': datetime.utcnow()
     }
@@ -113,57 +115,57 @@ def regenerate_token(refresh_token):
 
         if user:
             return Response({
-                "success" : True,
-                "status_code" :status.HTTP_201_CREATED,
-                "message" : global_msg.ACCESS_TOKEN_REGENERATED,
+                "success": True,
+                "status_code": status.HTTP_201_CREATED,
+                "message": global_msg.ACCESS_TOKEN_REGENERATED,
                 'data': {
                     'access_token': generate_access_token(
                         user.id,
                         user.role.value
                     )
                 },
-            }, status = status.HTTP_201_CREATED)
+            }, status=status.HTTP_201_CREATED)
 
         return Response({
-                "success" : False,
-                "status_code" :status.HTTP_404_NOT_FOUND,
-                "message" : app_msg.USER_NOT_FOUND,
-                "data" : None
-            }, status = status.HTTP_404_NOT_FOUND)
-
+            "success": False,
+            "status_code": status.HTTP_404_NOT_FOUND,
+            "message": app_msg.USER_NOT_FOUND,
+            "data": None
+        }, status=status.HTTP_404_NOT_FOUND)
 
     except jwt.ExpiredSignatureError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.REFRESH_TOKEN_EXPIRED,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.REFRESH_TOKEN_EXPIRED,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
     except jwt.InvalidSignatureError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.TOKEN_INVALID,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.TOKEN_INVALID,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
     except jwt.DecodeError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.DECODE_ERROR,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.DECODE_ERROR,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
     except jwt.InvalidTokenError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.TOKEN_INVALID,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
-    
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.TOKEN_INVALID,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
+
+
 def verify_token(access_token):
     try:
         payload = jwt.decode(
@@ -174,56 +176,55 @@ def verify_token(access_token):
 
         if user.role.value != payload.get('role'):
             return Response({
-                "success" : False,
-                "status_code" :status.HTTP_400_BAD_REQUEST,
-                "message" : global_msg.INVALID_ROLE_REQUEST,
+                "success": False,
+                "status_code": status.HTTP_400_BAD_REQUEST,
+                "message": global_msg.INVALID_ROLE_REQUEST,
                 'data': None
-            }, status = status.HTTP_400_BAD_REQUEST)
-        
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         if user:
             return Response({
-                "success" : True,
-                "status_code" :status.HTTP_200_OK,
-                "message" : global_msg.ACCESS_TOKEN_VERIFIED,
+                "success": True,
+                "status_code": status.HTTP_200_OK,
+                "message": global_msg.ACCESS_TOKEN_VERIFIED,
                 'data': None
-            }, status = status.HTTP_200_OK)
+            }, status=status.HTTP_200_OK)
 
         return Response({
-                "success" : False,
-                "status_code" :status.HTTP_404_NOT_FOUND,
-                "message" : app_msg.USER_NOT_FOUND,
-                "data" : None
-            }, status = status.HTTP_404_NOT_FOUND)
-
+            "success": False,
+            "status_code": status.HTTP_404_NOT_FOUND,
+            "message": app_msg.USER_NOT_FOUND,
+            "data": None
+        }, status=status.HTTP_404_NOT_FOUND)
 
     except jwt.ExpiredSignatureError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.REFRESH_TOKEN_EXPIRED,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.REFRESH_TOKEN_EXPIRED,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
     except jwt.InvalidSignatureError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.TOKEN_INVALID,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.TOKEN_INVALID,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
     except jwt.DecodeError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.DECODE_ERROR,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.DECODE_ERROR,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
 
     except jwt.InvalidTokenError:
         return Response({
-            "success" : False,
-            "status_code" :status.HTTP_401_UNAUTHORIZED,
-            "message" : global_msg.TOKEN_INVALID,
-            "data" : None
-        }, status = status.HTTP_401_UNAUTHORIZED)
+            "success": False,
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+            "message": global_msg.TOKEN_INVALID,
+            "data": None
+        }, status=status.HTTP_401_UNAUTHORIZED)
